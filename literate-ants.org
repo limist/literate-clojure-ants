@@ -14,9 +14,9 @@ as [[http://en.wikipedia.org/wiki/Software_transactional_memory][software transa
 
 ** Why literate ants?
 When Clojure was invented and began picking up interest from
-2007/2008, its creator Rich Hickey would [[http://blip.tv/clojure/clojure-concurrency-819147][highlight Clojure's features
+2007/2008, its creator Rich Hickey would [[http://www.youtube.com/watch?v=dGVqrGmwOAw][highlight Clojure's features
 with a demo program]]: a visual simulation of ants seeking food on a
-finite 2-D "world" board. I found the ants.clj program fascinating,
+finite 2-D "world" board. I found the =ants.clj= program fascinating,
 particularly as simulation is a core interest of mine. Historically,
 [[https://en.wikipedia.org/wiki/Object-oriented_programming#History][simulations motivated the object-oriented programming]] paradigm, so
 seeing a very different yet concise way to fulfill requirements of
