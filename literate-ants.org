@@ -58,10 +58,12 @@ the Program]].
 1. Don't take this file as anything like an ideal literate programming
    example!  This is just my version of understanding Rich Hickey's
    code, thus not (what I understand) reflecting the proper literate
-   programming approach to use.  Much of my prose below is relatively
-   verbose and explanatory, as opposed to what could/should be in the
-   non-code literate sections: meta, high-level discussion of major
-   design choices.
+   programming approach to use. (And what's proper LP? See the last
+   2009 comment on the [[http://www.literateprogramming.com/][literateprogramming.com page]].  Much of my prose
+   below is relatively verbose and explanatory (the /what/ of code),
+   as opposed to what could/should be in the non-code literate
+   sections: meta, /why/, high-level discussion of major design
+   choices.
 2. This version does not yet reflect more recent (post Clojure 1.2)
    changes to the language, e.g. =defstruct= is still used below, but
    has been deprecated in favor of [[http://clojure.org/datatypes][Clojure records]].
