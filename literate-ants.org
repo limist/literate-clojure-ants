@@ -3,7 +3,7 @@
 #+EMAIL: k@limist.com
 #+LANGUAGE: en
 #+STARTUP: align fold nodlcheck hidestars oddeven lognotestate
-#+PROPERTY: tangle ants.clj
+#+PROPERTY: tangle literate-ants.clj
 
 * Introduction
 [[http://clojure.org][Clojure]] is a modern Lisp dialect that runs (primarily) on the [[http://en.wikipedia.org/wiki/Jvm][Java
@@ -84,7 +84,7 @@ creates a var (a mutable storage location) which connects a symbol to
 a value in the current [[http://clojure.org/namespaces][namespace]].
 
 #+name: sim-world-setup
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ant sim ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;   Copyright (c) Rich Hickey. All rights reserved.
 ;;
@@ -164,7 +164,7 @@ needs defining:
     vector are the y-positions (here, a total of 80 cells).
 
 #+name sim-world-board-creation
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defstruct cell :food :pher)  ; May also have :ant and :home values
 
 ;; World is a 2d vector of refs to cells
@@ -215,7 +215,7 @@ having only one required key, its direction. (An ant may temporarily
 have another key, =:food=.)
 
 #+name ants-defined
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defstruct ant :dir)  ; Always has dir heading; may also have :food
 
 (defn create-ant 
@@ -275,7 +275,7 @@ the simulation runs. We can see these two aspects of the home-square
 in the two =def= calls for =home-offset= and =home-range= below.
 
 #+name home-setup
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (def home-offset (/ dim 4))
 (def home-range (range home-offset (+ nants-sqrt home-offset)))
 
@@ -333,7 +333,7 @@ Next, consider facing/orientation and moving to another place in the
 2-D world. Three functions below, followed by explanations:
 
 #+name world-wrapping
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn bound 
   "Returns given n, wrapped into range 0-b"
   [b n]
@@ -389,7 +389,7 @@ changing the direction they "face"), and stepping forward.  Let's deal
 with turning first:
 
 #+name ant-agent-turn
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 ;; An ant agent tracks the location of an ant, and controls the
 ;; behavior of the ant at that location.
 
@@ -413,7 +413,7 @@ with the updated ant.
 Now for actual movement to a new place:
 
 #+name ant-agent-move
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn move 
   "Moves the ant in the direction it is heading. Must be called in a
   transaction that has verified the way is clear."
@@ -449,7 +449,7 @@ interactions (each having two steps) change the board, and as with the
 ensure the [[http://www.youtube.com/watch?v=z_KmNZNT5xw][world is in a consistent state]]. 
 
 #+name ant-agent-food
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn take-food [loc]
   "Takes one food from current location. Must be called in a
   transaction that has verified there is food available."
@@ -489,7 +489,7 @@ So we need functions to express preference of the next location for an
 ant. The functions =rank-by= and =wrand= help with that.
 
 #+name ant-agent-judgment-1
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn rank-by 
   "Returns a map of xs to their 1-based rank when sorted by keyfn."
   [keyfn xs]
@@ -535,7 +535,7 @@ which location/cell the ant moves to next in a weighted manner; i.e.
 the "dice" are loaded with =rank-by=, then "rolled" here:
 
 #+name ant-agent-judgment-2
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn wrand 
   "Given a vector of slice sizes, returns the index of a slice given a
   random spin of a roulette wheel with compartments proportional to
@@ -589,7 +589,7 @@ using =behave=, since ants may try to move into the same cell, try to
 acquire the same food, etc.
 
 #+name ant-agent-behave
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn behave 
   "The main function for the ant agent."
   [loc]
@@ -717,7 +717,7 @@ binary choice:
      ranking/weighting.
 
 ** World behavior: pheromone evaporation
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn evaporate 
   "Causes all the pheromones to evaporate a bit."
   []
@@ -755,7 +755,7 @@ inter-operation capabilities. But as we'll see, it's more than just
 wrapping calls to Java.
 
 ** Using the Java AWT
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (import 
  '(java.awt Color Graphics Dimension)
  '(java.awt.image BufferedImage)
@@ -799,14 +799,14 @@ Swing, let's describe the classes used:
 ** Functions to render the board and the ants
 Each discrete cell on the world board is a square matrix of pixels;
 with an odd number of pixels chosen, we can have a central position:
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (def scale 5)  ; A world cell is 5x5 pixels.
 #+END_SRC
 
 By default, cells are empty; drawing cells having food or
 ant-deposited pheromones is done by filling with symbolic colors -
 here by running the Java methods =setColor= and =fillRect=:
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn fill-cell [#^Graphics g x y c]
   (doto g
     (.setColor c)
@@ -822,7 +822,7 @@ methods/setters acting on it and then returning it, implicitly.
 Drawing an ant: the graphical appearance of an ant is just a (5-pixel
 long) line pointing in one of the 8 cardinal directions, of two
 different colors (having food or not):
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn render-ant [ant #^Graphics g x y]
   (let [black (. (new Color 0 0 0 255) (getRGB))
         gray (. (new Color 100 100 100 255) (getRGB))
@@ -850,7 +850,7 @@ coordinates, needed in AWT's =[[http://docs.oracle.com/javase/1.4.2/docs/api/jav
 If a cell in the ants' world is not empty, it has one or more of three
 things present: pheromone, food, or an ant.  The =render-place=
 function updates the cell's appearance accordingly:
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn render-place [g p x y]
   (when (pos? (:pher p))
     (fill-cell g x y (new Color 0 255 0 
@@ -868,7 +868,7 @@ the UI/window appearance by applying =render=place= to every cell, and
 also drawing the home space of the ants.  Note the heavy usage of the
 dot special form: the UI code relies heavily on Java, though Clojure's
 =for= and =doto= help us avoid Java boilerplate and stay concise:
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn render [g]
   (let [v (dosync (apply vector (for [x (range dim) y (range dim)] 
                                    @(place [x y]))))
@@ -896,7 +896,7 @@ Almost ready to begin our simulation; we need to setup some additional
 elements per AWT conventions: the main UI =panel= where visual changes
 take place, the top-level window =frame=, and an =animator= agent that
 continually updates the visual elements:
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (def panel (doto 
              (proxy [JPanel] [] (paint [g] (render g)))
              (.setPreferredSize (new Dimension 
@@ -914,7 +914,7 @@ cartoons of old, the =animation= function will "draw" the next state
 of the main panel displaying the ants.  Below, Hickey uses the
 queue-itself-then-run, again-and-again code pattern we've seen before
 (above, in updating an ant's state):
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defn animation [x]
   (when running
     (send-off *agent* #'animation))
@@ -925,7 +925,7 @@ queue-itself-then-run, again-and-again code pattern we've seen before
 
 Finally, we need another agent to handle one more time-track of
 changes: evaporation, using the =evaporate= function defined above.
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (def evaporator (agent nil))
 
 (defn evaporation [x]
@@ -974,7 +974,7 @@ Clojure!
 
 
 ** Unused                                                          :ARCHIVE:
-#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle yes
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 (comment
 ;demo
 (load-file "/Users/rich/dev/clojure/ants.clj")
