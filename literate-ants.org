@@ -2,7 +2,7 @@
 #+AUTHOR: Rich Hickey (this literate/org-babel version, Kai Wu)
 #+EMAIL: k@limist.com
 #+LANGUAGE: en
-#+STARTUP: align fold nodlcheck hidestars oddeven lognotestate hideblocks
+#+STARTUP: align fold nodlcheck hidestars oddeven lognotestate
 #+PROPERTY: tangle ants.clj
 
 * Introduction
@@ -59,7 +59,7 @@ the Program]].
    example!  This is just my version of understanding Rich Hickey's
    code, thus not (what I understand) reflecting the proper literate
    programming approach to use. (And what's proper LP? See the last
-   2009 comment on the [[http://www.literateprogramming.com/][literateprogramming.com page]].  Much of my prose
+   2009 comment on the [[http://www.literateprogramming.com/][literateprogramming.com page]].)  Much of my prose
    below is relatively verbose and explanatory (the /what/ of code),
    as opposed to what could/should be in the non-code literate
    sections: meta, /why/, high-level discussion of major design
