@@ -19,14 +19,15 @@ You'll need a recent version of Emacs (e.g. 24.3.x) as well as Org mode (7.9.x, 
 ```
 
 ### Essentials
+Assuming you're looking at the `literate-ants.org` file from within Emacs24 with Org mode active:
 - `SHIFT-TAB` will cycle through displaying: top-level only, all
   headings, or fully-expanded.
 - `CTRL-c-v-t` will /tangle/ code; Org will process each code block
   below, and generate the source file `literate-ants.clj`
 - Within a code block, `CTRL-c-'` will open a buffer to edit the
-  code. For full power, be sure `clojure-mode`, `ParEdit`, and
-  `nrepl` are installed.
-- More on Org: [main documentation](http://orgmode.org/org.html) especially sections on [structure](http://orgmode.org/org.html#Document-Structure), [links](http://orgmode.org/org.html#Hyperlinks), [markup](http://orgmode.org/org.html#Markup), and [literate programming](http://orgmode.org/org.html#Working-With-Source-Code) features.
+  code. For full power, be sure the Emacs packages of `clojure-mode`, `paredit`, and
+  `nrepl` are installed - fairly straightforward [using ELPA](http://ergoemacs.org/emacs/emacs_package_system.html): from Emacs24 just do `M-x package-list-packages`, move the cursor to the package of interest, hit `i` to mark it for installation, hit `x` to proceed with installation.
+- More information on Org: [main documentation](http://orgmode.org/org.html) especially sections on [structure](http://orgmode.org/org.html#Document-Structure), [links](http://orgmode.org/org.html#Hyperlinks), [markup](http://orgmode.org/org.html#Markup), and [literate programming](http://orgmode.org/org.html#Working-With-Source-Code) features.
 
 
 ## License
