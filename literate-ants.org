@@ -2,22 +2,68 @@
 #+AUTHOR: Rich Hickey (this literate/org-babel version, Kai Wu)
 #+EMAIL: k@limist.com
 #+LANGUAGE: en
-#+STARTUP: align fold nodlcheck hidestars oddeven lognotestate
+#+STARTUP: align indent fold nodlcheck hidestars oddeven lognotestate
 #+PROPERTY: tangle literate-ants.clj
 
 * Introduction
+** What is this, why is it worthwhile? Quickly please!
++ You're looking at a literate programming (LP) style, single-file
+  version of Rich Hickey's Clojure ants simulator, in Org mode format.
++ For best results please use Emacs with Org mode to view this =.org=
+  file. If you're looking at this on Github.com, STOP - the rendering
+  there is neither complete nor correct!
++ The benefits of LP+Emacs+Org:
+  1. Coherence: a unified, single-file approach to software
+     development that is more than the sum of its parts.  LP is not
+     just documentation and code together: it's a *process and
+     abstraction unifying the development lifecycle*: requirements,
+     architecture, design, code, tests, deployment, and maintenance -
+     coherently bound in one format.
+  2. Flexibility: provided mostly by Org mode's mature features:
+     - Org's plain-text markup is *lightweight, yet more powerful*
+       than Markdown, and cleaner than RsT. And of course, it's easy
+       to version-control Org files.
+     - The structural editing provided by Org documents lets you
+       *organize* your thoughts/writing/code very quickly, and
+       change/revise with minimum friction.
+     - Org's exporter lets your *write-once, express-many-times*: you
+       can export an Org file to HTML (e.g. for blogging) or LaTeX
+       (for serious publications).
++ Essentials
+  - =SHIFT-TAB= will cycle through displaying: top-level only, all
+    headings, or fully-expanded.
+  - =CTRL-c-v-t= will /tangle/ code; Org will process each code block
+    below, and generate the source file =literate-ants.clj=
+  - Within a code block, =CTRL-c-'= will open a buffer to edit the
+    code. For full power, be sure =clojure-mode=, =ParEdit=, and
+    =nrepl= are installed.
+  - More on Org: [[http://orgmode.org/org.html][main documentation]] especially sections on [[http://orgmode.org/org.html#Document-Structure][structure]],
+    [[http://orgmode.org/org.html#Hyperlinks][links]], [[http://orgmode.org/org.html#Markup][markup]], and [[http://orgmode.org/org.html#Working-With-Source-Code][literate programming]] features.
+
+** Why Clojure?
 [[http://clojure.org][Clojure]] is a modern Lisp dialect that runs (primarily) on the [[http://en.wikipedia.org/wiki/Jvm][Java
 Virtual Machine]]. As a language its main paradigm is [[http://en.wikipedia.org/wiki/Functional_programming][functional
 programming]] (vs. the usual [[http://en.wikipedia.org/wiki/Object-oriented_programming][OO]] or [[http://en.wikipedia.org/wiki/Imperative_programming][imperative]] languages of Java, Python,
 Ruby), and it also provides powerful constructs for concurrency such
 as [[http://en.wikipedia.org/wiki/Software_transactional_memory][software transactional memory (STM)]].
 
+So why use or learn Clojure?  
+1. There are *technical* reasons, better covered elsewhere.
+2. There are *aesthetic* reasons: code is poetry, and like the best
+   poems, expressiveness (the ratio of power:symbols) matters, and
+   Clojure excels there.
+3. Last but certainly not least, there are *human* reasons: I've found
+   the Clojure community to be one of the smartest and friendliest
+   around: there's a lot of brilliant-yet-humble innovation going
+   on. If you've watched Hickey's talks and gotten a sense of his
+   character, the same spirit generally pervades Clojurians.
+
 ** Why literate ants?
 When Clojure was invented and began picking up interest from
 2007/2008, its creator Rich Hickey would [[http://www.youtube.com/watch?v=dGVqrGmwOAw][highlight Clojure's features
 with a demo program]]: a visual simulation of ants seeking food on a
 finite 2-D "world" board. I found the =ants.clj= program fascinating,
-particularly as simulation is a core interest of mine. Historically,
+particularly as simulation is a core interest. Historically,
 [[https://en.wikipedia.org/wiki/Object-oriented_programming#History][simulations motivated the object-oriented programming]] paradigm, so
 seeing a very different yet concise way to fulfill requirements of
 encapsulation, concurrent state, and modeling changes over time drew
@@ -25,15 +71,15 @@ me in to Clojure.
 
 To build more skill in Clojure, I wanted to fully understand
 =ants.clj=.  I also wanted to try Knuth's [[http://vasc.ri.cmu.edu/old_help/Programming/Literate/literate.html][literate programming
-approach]], using my favorite tool: [[http://www.gnu.org/software/emacs/][Emacs]] and its peerless
+approach]] (LP), using my favorite tool: [[http://www.gnu.org/software/emacs/][Emacs]] and its peerless
 [[http://orgmode.org][org-mode]]. Thus this =.org= file (and its HTML or PDF version) you're
 now looking at is the literate version of Hickey's =ants.clj= code. I
 took the original program, made minor changes for my comprehension,
 and offer it as a working example of literate Clojure.
 
-** Setup and caveats
+** Overview and setup
 *** Prerequisites
-1. A recent version of Emacs (ideally 24.3).
+1. A recent version of Emacs (ideally 24.3+).
 2. Both org-mode and =clojure-mode= installed; use Emacs ELPA.
 
 Then if you start Emacs and load this file, you'll see it the way it's
@@ -54,16 +100,19 @@ the details too.  So tangle this literate file per above instructions,
 so you have the =literate-ants.clj= file, then jump down to [[Running
 the Program]].
 
-*** Caveats
+** Caveats - this may not be the LP you're looking for
 1. Don't take this file as anything like an ideal literate programming
    example!  This is just my version of understanding Rich Hickey's
-   code, thus not (what I understand) reflecting the proper literate
-   programming approach to use. (And what's proper LP? See the last
-   2009 comment on the [[http://www.literateprogramming.com/][literateprogramming.com page]].)  Much of my prose
-   below is relatively verbose and explanatory (the /what/ of code),
-   as opposed to what could/should be in the non-code literate
-   sections: meta, /why/, high-level discussion of major design
-   choices.
+   code, thus it does not reflect a complete or proper literate
+   programming approach to use.
+   - And what's *proper LP*? See the last 2009 comment on the
+     [[http://www.literateprogramming.com/][literateprogramming.com page]].  LP is not just about
+     documentation, but is a tool/approach for higher-level
+     abstraction, combining human thought and code.
+   - So beware: much of my prose below is relatively verbose and
+     explanatory (the /what/ and /how/ of code), as opposed to what
+     could/should be in the literate sections: meta, /why/, high-level
+     discussion of major design choices.
 2. This version does not yet reflect more recent (post Clojure 1.2)
    changes to the language, e.g. =defstruct= is still used below, but
    has been deprecated in favor of [[http://clojure.org/datatypes][Clojure records]].
