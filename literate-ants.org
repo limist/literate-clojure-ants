@@ -9,35 +9,37 @@
 ** What is this, why is it worthwhile? Quickly please!
 + You're looking at a literate programming (LP) style, single-file
   version of Rich Hickey's Clojure ants simulator, in Org mode format.
-+ For best results please use Emacs with Org mode to view this =.org=
-  file. If you're looking at this on Github.com, STOP - the rendering
++ For best results please *use Emacs with Org mode to view this =.org=
+  file*. If you're looking at this on Github.com, STOP - the rendering
   there is neither complete nor correct!
-+ The benefits of LP+Emacs+Org:
++ The *benefits* of LP+Emacs+Org:
   1. Coherence: a unified, single-file approach to software
      development that is more than the sum of its parts.  LP is not
      just documentation and code together: it's a *process and
      abstraction unifying the development lifecycle*: requirements,
      architecture, design, code, tests, deployment, and maintenance -
-     coherently bound in one format.
+     coherently bound in one active format.
   2. Flexibility: provided mostly by Org mode's mature features:
-     - Org's plain-text markup is *lightweight, yet more powerful*
+     - Org's plain-text *markup is lightweight*, yet more powerful
        than Markdown, and cleaner than RsT. And of course, it's easy
        to version-control Org files.
-     - The structural editing provided by Org documents lets you
-       *organize* your thoughts/writing/code very quickly, and
+     - The *structural editing* provided by Org documents lets you
+       organize your thoughts/writing/code very quickly, and
        change/revise with minimum friction.
      - Org's exporter lets your *write-once, express-many-times*: you
        can export an Org file to HTML (e.g. for blogging) or LaTeX
-       (for serious publications).
+       (for serious publishing).
 + Essentials
-  - =SHIFT-TAB= will cycle through displaying: top-level only, all
+  - =SHIFT-TAB= will *cycle* the display: top-level headings only, all
     headings, or fully-expanded.
-  - =CTRL-c-v-t= will /tangle/ code; Org will process each code block
+  - =CTRL-c-v-t= will *tangle* code; Org will process each code block
     below, and generate the source file =literate-ants.clj=
   - Within a code block, =CTRL-c-'= will open a buffer to edit the
-    code. For full power, be sure =clojure-mode=, =ParEdit=, and
+    code. For full power, be sure =clojure-mode=, =paredit=, and
     =nrepl= are installed.
-  - More on Org: [[http://orgmode.org/org.html][main documentation]] especially sections on [[http://orgmode.org/org.html#Document-Structure][structure]],
+  - Export this file to HTML with =CTRL-c-e h= or, to see it
+    immediately in a browser window, =CTRL-c-e b=.
+  - Org docs: see [[http://orgmode.org/org.html][main documentation]], especially sections on [[http://orgmode.org/org.html#Document-Structure][structure]],
     [[http://orgmode.org/org.html#Hyperlinks][links]], [[http://orgmode.org/org.html#Markup][markup]], and [[http://orgmode.org/org.html#Working-With-Source-Code][literate programming]] features.
 
 ** Why Clojure?
