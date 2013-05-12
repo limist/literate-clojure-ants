@@ -21,7 +21,7 @@
      coherently bound in one active format.
   2. Flexibility: provided mostly by Org mode's mature features:
      - Org's plain-text *markup is lightweight*, yet more powerful
-       than Markdown, and cleaner than RsT. And of course, it's easy
+       than Markdown, and cleaner than rST. And of course, it's easy
        to version-control Org files.
      - The *structural editing* provided by Org documents lets you
        organize your thoughts/writing/code very quickly, and
@@ -173,51 +173,25 @@ a value in the current [[http://clojure.org/namespaces][namespace]].
 ** The board: ready to mutate via transactions
 Things get more interesting once the actual simulation environment
 needs defining: 
-+ First, a call to =[[http://clojuredocs.org/clojure_core/clojure.core/defstruct][defstruct]]= (like a hashmap or dictionary in other
-  languages) defines a baseline /cell/. 
-  - =defstruct= is like a very lightweight class or
-    constructor/template function, and conveniently wraps Clojure's
-    =[[http://clojuredocs.org/clojure_core/clojure.core/create-struct][create-struct]]=.
-  - Here, a cell has two keys to start, =:food= and =:pher=, to
-    indicate the presence of food and pheromones. A cell may also have
-    keys of =:ant= and =:home=, depending on whether an ant and/or the
-    home-colony is present.
-+ Next, the =world= function creates the 2-dimensional "board" of cells
-  (here, a square of 80x80 cells), represented as vectors (rows or the
-  vertical y-dimension) of a vector (the horizontal x-dimension
-  columns in one row).
-  - Start with the innermost =[[http://clojuredocs.org/clojure_core/clojure.core/map][map]]= call, which uses an anonymous
-    function to create one column of 80 cells, per =(range dim)=. The
-    =[[http://clojuredocs.org/clojure_core/clojure.core/struct][struct]]= returns a new structmap instance using the earlier cell as
-    the basis, initializing the =:food= and =:pher= values to zero.
-  - But notice that =struct= is wrapped with a [[http://clojure.org/refs][transactional ref]], and
-    here's the first glimpse of Clojure's concurrency powers. With
-    each cell being stateful (possibly time-varying values of =:food=,
-    =:pher=, =:ant=, and =:home= values) and with multiple threads
-    updating the board and board elements, we'd typically think of
-    using locks on each cell when updating its state.
-
-    But in Clojure with its [[http://en.wikipedia.org/wiki/Software_transactional_memory][software transactional memory]] (STM), we
-    just use =ref= for safe references to mutable collections (here, a
-    =struct=) - all changes to a cell will then be atomic, consistent,
-    and isolated![fn:Databases-ACID] Like using an RDBMS, you don't
-    need to manually manage concurrency.
-  - Once you understand the innermost =(ref (struct cell 0 0 ))= =map=
-    call, the rest of =(def world...)= is straightforward: =apply=
-    uses =vector= as a constructor function with the =map= function
-    producing the vector's arguments, creating a "column" in the 2-D
-    board.
-  - Then the pattern is repeated in the outermost 
-    =(apply vector (map...))= call, creating all the columns of the
-    2-D board.
-  - Note that as defined, each vector in =world= (again, a 2-D vector of
-    vectors) corresponds to an x-position, and of course, within that
-    vector are the y-positions (here, a total of 80 cells).
-
-#+name sim-world-board-creation
 #+BEGIN_SRC clojure :exports code :results silent :session s1 
 (defstruct cell :food :pher)  ; May also have :ant and :home values
+#+END_SRC
+First, a call to =[[http://clojuredocs.org/clojure_core/clojure.core/defstruct][defstruct]]= (like a hashmap or dictionary in other
+languages) defines a baseline /cell/. 
+- =defstruct= is like a very lightweight class or
+  constructor/template function, and conveniently wraps Clojure's
+  =[[http://clojuredocs.org/clojure_core/clojure.core/create-struct][create-struct]]=.
+- Here, a cell has two keys to start, =:food= and =:pher=, to
+  indicate the presence of food and pheromones. A cell may also have
+  keys of =:ant= and =:home=, depending on whether an ant and/or the
+  home-colony is present.
 
+Next, the =world= function creates the 2-dimensional "board" of cells
+(here, a square of 80x80 cells), represented as vectors (rows or the
+vertical y-dimension) of a vector (the horizontal x-dimension columns
+in one row):
+#+name sim-world-board-creation
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
 ;; World is a 2d vector of refs to cells
 (def world 
      (apply vector 
@@ -227,23 +201,52 @@ needs defining:
                                  (ref (struct cell 0 0))) 
                                (range dim)))) 
                  (range dim))))
-  
-(defn place [[x y]]
-  (-> world (nth x) (nth y)))
 #+END_SRC
+Reading the above:
+- Start with the innermost =[[http://clojuredocs.org/clojure_core/clojure.core/map][map]]= call, which uses an anonymous
+  function to create one column of 80 cells, per =(range dim)=. The
+  =[[http://clojuredocs.org/clojure_core/clojure.core/struct][struct]]= returns a new structmap instance using the earlier cell as
+  the basis, initializing the =:food= and =:pher= values to zero.
+- But notice that =struct= is wrapped with a [[http://clojure.org/refs][transactional ref]], and
+  here's the first glimpse of Clojure's concurrency powers. With
+  each cell being stateful (possibly time-varying values of =:food=,
+  =:pher=, =:ant=, and =:home= values) and with multiple threads
+  updating the board and board elements, we'd typically think of
+  using locks on each cell when updating its state.
+
+  But in Clojure with its [[http://en.wikipedia.org/wiki/Software_transactional_memory][software transactional memory]] (STM), we
+  just use =ref= for safe references to mutable collections (here, a
+  =struct=) - all changes to a cell will then be atomic, consistent,
+  and isolated![fn:Databases-ACID] Like using an RDBMS, you don't
+  need to manually manage concurrency.
+- Once you understand the innermost =(ref (struct cell 0 0 ))= =map=
+  call, the rest of =(def world...)= is straightforward: =apply=
+  uses =vector= as a constructor function with the =map= function
+  producing the vector's arguments, creating a "column" in the 2-D
+  board.
+- Then the pattern is repeated in the outermost 
+  =(apply vector (map...))= call, creating all the columns of the
+  2-D board.
+- Note that as defined, each vector in =world= (again, a 2-D vector of
+  vectors) corresponds to an x-position, and of course, within that
+  vector are the y-positions (here, a total of 80 cells).
+
 
 The =place= function is a selector function (think of "place" as the
 noun, not the verb) returning particular cells in the 2-D world. Once
 we have a cell, we can then mutate it to represent ants, food, and
-pheromones (or their absence).
+pheromones (or their absence):
+#+BEGIN_SRC clojure :exports code :results silent :session s1 
+(defn place [[x y]]
+  (-> world (nth x) (nth y)))
+#+END_SRC
 - =place= takes a single vector argument (having two elements x and
   y), then applies the [[http://www.colourcoding.net/blog/archive/2011/07/09/another-go-at-explaining-the-thrush-operator-in-clojure.aspx][thrush operator]] (the [[http://clojuredocs.org/clojure_core/clojure.core/-%3E][arrow-like ->]]) on the
   world object, first selecting the "column" =(nth x)= on world, then
   the "row" =(nth y)= on that column.
 
 
-[fn:Databases-ACID] STM is like a memory-only SQL database, thus the
-last property of being durable/persistent won't be satisfied.
+[fn:Databases-ACID] STM is like a memory-only SQL database, thus the last property of being durable/persistent won't be satisfied.
 
 *** Aside: the thrush operator
 The thrush operator helps make code more concise, and arguably
