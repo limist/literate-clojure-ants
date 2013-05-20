@@ -34,7 +34,7 @@
     headings, or fully-expanded.
   - =CTRL-c-v-t= will *tangle* code; Org will process each code block
     below, and generate the source file =literate-ants.clj=
-  - Within a code block, =CTRL-c-'= will open a buffer to edit the
+  - Within a code block, =CTRL-c= ='= will open a buffer to edit the
     code. For full power, be sure =clojure-mode=, =paredit=, and
     =nrepl= are installed.
   - Export this file to HTML with =CTRL-c-e h= or, to see it
