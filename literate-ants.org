@@ -1011,7 +1011,7 @@ created alongside =ants.clj=.  Assuming you've installed the excellent
 ** Running the simulator
 At the REPL, you can enter the entire =do= expression below, or try
 each line within it separately:
-#+BEGIN_SRC clojure
+#+BEGIN_SRC clojure :tangle no
 (do 
   (load-file "./literate-ants.clj")
   (def ants (setup))
@@ -1027,8 +1027,8 @@ concurrently, with no locks, and beautifully concise code - welcome to
 Clojure!
 
 
-** Unused                                                          :ARCHIVE:
-#+BEGIN_SRC clojure :exports code :results silent :session s1 
+** Unused                                                 :ARCHIVE:NOEXPORT:
+#+BEGIN_SRC clojure :exports code :results silent :session s1 :tangle no
 (comment
 ;demo
 (load-file "/Users/rich/dev/clojure/ants.clj")
