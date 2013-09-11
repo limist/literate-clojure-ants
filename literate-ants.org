@@ -747,6 +747,8 @@ don't know; here's what I could find:
   of the function (with the current ant/location) to be sent to the
   queue? NO/unlikely. If it was mean to be a dynamic var, it would
   have asterisks around it like =*agent*=.
+- Another possibility is that the #' maintains a runtime look-up so
+  that =behave= can be redefined on a running simulation while developing.
 
 Why use =send-off= instead of =send= ?
 - [[http://stackoverflow.com/questions/1646351/what-is-the-difference-between-clojures-send-and-send-off-functions-with-re][send vs. send-off]] - =send= uses threadpool of fixed size which has
